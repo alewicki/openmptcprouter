@@ -1,0 +1,31 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+    (
+        logger -t t7xx-no-pm "Waiting for FM350 devices"
+
+        for i in $(seq 1 30); do
+            found=0
+
+            for d in /sys/bus/pci/devices/*; do
+                [ "$(cat "$d/vendor" 2>/dev/null)" = "0x14c3" ] || continue
+                [ "$(cat "$d/device" 2>/dev/null)" = "0x4d75" ] || continue
+                [ -f "$d/t7xx_mode" ] || continue
+
+                echo on > "$d/power/control"
+
+                logger -t t7xx-no-pm \
+                    "$(basename "$d"): mode=$(cat "$d/t7xx_mode"), power=$(cat "$d/power/control")"
+
+                found=$((found + 1))
+            done
+
+            [ "$found" -ge 2 ] && [ "$i" -ge 10 ] && break
+            sleep 1
+        done
+
+        logger -t t7xx-no-pm "Runtime PM disable complete"
+    ) &
+}

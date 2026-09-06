@@ -180,6 +180,9 @@ rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-mvebu"
 	cp -rf common/* "$OMR_TARGET/${OMR_KERNEL}/source"
 	echo "cp -rf ${OMR_KERNEL}/* $OMR_TARGET/${OMR_KERNEL}/source"
 	cp -rf ${OMR_KERNEL}/* "$OMR_TARGET/${OMR_KERNEL}/source"
+  if [ -d "target-${OMR_TARGET}" ]; then
+      cp -rf "target-${OMR_TARGET}"/* "$OMR_TARGET/${OMR_KERNEL}/source"
+  fi
 #	rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx"
 #	mv -f "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx.old" "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx"
 if [ -n "$CUSTOM_FEED" ] && [ -d ${CUSTOM_FEED}/source/${OMR_TARGET}/${OMR_KERNEL} ]; then
